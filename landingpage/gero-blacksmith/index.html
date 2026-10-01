@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Gero Blacksmith</title>
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #e8e8e8;
+            --dim: #8a8a8a;
+            --lime: #b6ff00;
+            --cyan: #00e5ff;
+            --hot: #ff2a6d;
+            --mono: "Courier New", Courier, monospace;
+            --serif: Georgia, "Times New Roman", serif;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(56px + env(safe-area-inset-top, 0px))
+        }
+
+        body {
+            margin: 0;
+            background: #000;
+            color: var(--fg);
+            font: 16px/1.65 var(--mono);
+            overflow-x: hidden
+        }
+
+        a {
+            color: var(--cyan);
+            text-decoration: none;
+            border-bottom: 1px solid transparent
+        }
+
+        a:hover,
+        a:focus-visible {
+            color: var(--lime);
+            border-color: var(--lime);
+            outline: none
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 3px
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, .92);
+            border-bottom: 1px solid #222;
+            padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+            display: flex;
+            gap: 6px 18px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            white-space: nowrap
+        }
+
+        nav a {
+            color: var(--dim);
+            font-size: 14px;
+            padding: 4px 0
+        }
+
+        nav a.on {
+            color: var(--lime);
+            border-color: var(--lime)
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 110px 6vw 70px;
+            border-bottom: 1px solid #1a1a1a;
+            position: relative
+        }
+
+        #hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 90px;
+            overflow: hidden
+        }
+
+        #scope {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: .55
+        }
+
+        h1 {
+            position: relative;
+            font: 700 clamp(44px, 13vw, 190px)/.9 var(--serif);
+            letter-spacing: -.04em;
+            margin: 0;
+            text-transform: lowercase
+        }
+
+        h1 span {
+            display: block
+        }
+
+        h1 span:nth-child(2) {
+            color: transparent;
+            -webkit-text-stroke: 2px var(--fg);
+            margin-left: 8vw
+        }
+
+        h1:hover span:first-child {
+            color: var(--lime);
+            transform: translateX(-6px) skewX(-4deg)
+        }
+
+        h1:hover span:nth-child(2) {
+            -webkit-text-stroke-color: var(--cyan);
+            transform: translateX(8px)
+        }
+
+        h1 span {
+            transition: transform .08s steps(2)
+        }
+
+        .tag {
+            position: relative;
+            margin-top: 28px;
+            color: var(--dim);
+            max-width: 46ch
+        }
+
+        h2 {
+            font: 400 clamp(30px, 6vw, 64px)/1 var(--serif);
+            margin: 0 0 36px;
+            letter-spacing: -.02em
+        }
+
+        h2 i {
+            color: var(--hot);
+            font-style: normal;
+            font-family: var(--mono);
+            font-size: .4em;
+            vertical-align: super;
+            margin-left: 10px
+        }
+
+        .col {
+            max-width: 64ch
+        }
+
+        p {
+            margin: 0 0 1.2em
+        }
+
+        .big {
+            font: italic 400 clamp(22px, 3.6vw, 40px)/1.25 var(--serif);
+            max-width: 26ch;
+            color: var(--fg)
+        }
+
+        .big b {
+            font-weight: 400;
+            color: var(--lime)
+        }
+
+        ul.list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-width: 760px
+        }
+
+        ul.list li {
+            display: flex;
+            gap: 18px;
+            justify-content: space-between;
+            align-items: baseline;
+            border-top: 1px solid #222;
+            padding: 14px 0
+        }
+
+        ul.list li:last-child {
+            border-bottom: 1px solid #222
+        }
+
+        ul.list em {
+            color: var(--dim);
+            font-style: normal;
+            font-size: 14px;
+            text-align: right
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0 0 28px;
+            padding: 0;
+            list-style: none
+        }
+
+        .tags li {
+            border: 1px solid var(--dim);
+            padding: 2px 12px;
+            border-radius: 99px;
+            font-size: 14px
+        }
+
+        .tags li:nth-child(4n+1) {
+            border-color: var(--lime);
+            color: var(--lime)
+        }
+
+        .tags li:nth-child(4n+2) {
+            border-color: var(--cyan);
+            color: var(--cyan)
+        }
+
+        .tags li:nth-child(4n+3) {
+            border-color: var(--hot);
+            color: var(--hot)
+        }
+
+        .btn {
+            display: inline-block;
+            border: 1px solid var(--lime);
+            color: var(--lime);
+            padding: 10px 22px;
+            margin: 6px 10px 6px 0
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            background: var(--lime);
+            color: #000
+        }
+
+        .note {
+            color: var(--dim);
+            font-size: 14px
+        }
+
+        .tick {
+            color: var(--hot)
+        }
+
+        footer {
+            padding: 30px 6vw;
+            color: var(--dim);
+            font-size: 13px
+        }
+
+        @media(max-width:560px) {
+            body {
+                font-size: 15px
+            }
+
+            ul.list li {
+                flex-direction: column;
+                gap: 2px
+            }
+
+            ul.list em {
+                text-align: left
+            }
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            html {
+                scroll-behavior: auto
+            }
+
+            h1 span {
+                transition: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav aria-label="Sections">
+        <a href="#hero">gero</a><a href="#about">about me</a><a href="#sound">about my music</a><a
+            href="#philosophy">philosophy</a><a href="#music">music</a><a href="#projects">projects</a><a
+            href="#live">live events</a><a href="#socials">socials</a><a href="#contact">contact</a>
+    </nav>
+
+    <section id="hero">
+        <canvas id="scope" aria-hidden="true"></canvas>
+        <h1><span>gero</span><span>blacksmith</span></h1>
+        <p class="tag">Electronic music: IDM, breakcore, drum and bass, ambient. Made in a home studio, increasingly
+            without a computer.</p>
+    </section>
+
+    <section id="about">
+        <h2>about me<i>01</i></h2>
+        <div class="col">
+            <p>Gero Blacksmith is an artist and music producer working in electronic music. The name suggests a forge:
+                sounds get heated, hit, bent and cooled into something new.</p>
+            <p>Most of the work happens in a personal studio, where tracks are written, tested and reshaped. Some end up
+                as mixes, some as releases, some as live jams recorded in one take.</p>
+            <p class="note">Add your own story here: where you are from, when you started, what first pulled you into
+                sound.</p>
+        </div>
+    </section>
+
+    <section id="sound">
+        <h2>about my music<i>02</i></h2>
+        <ul class="tags">
+            <li>idm</li>
+            <li>breakcore</li>
+            <li>drum and bass</li>
+            <li>ambient</li>
+        </ul>
+        <div class="col">
+            <p>Broken rhythms and dense detail sit next to long, quiet textures. A track can go from a 170 bpm rush to a
+                slow wash of ambient in a few minutes.</p>
+            <p>Breaks are chopped and rebuilt until they stop sounding like the originals. Bass is heavy but kept clean.
+                Silence and space count as much as noise.</p>
+        </div>
+    </section>
+
+    <section id="philosophy">
+        <h2>philosophy<i>03</i></h2>
+        <p class="big">Make it by hand. <b>Keep the mistakes</b> that sound good. Finish the track, then start another.
+        </p>
+        <div class="col" style="margin-top:36px">
+            <p>Machines are instruments, not shortcuts. Dawless sessions mean every sound has a knob, a cable and a
+                decision behind it.</p>
+            <p>Music is for listening closely and for moving to. It does not need to be one or the other.</p>
+        </div>
+    </section>
+
+    <section id="music">
+        <h2>music<i>04</i></h2>
+        <div class="col">
+            <p>Tracks and mixes live on SoundCloud. Start there, then follow the Linktree for other streaming platforms.
+            </p>
+            <p><a class="btn" href="https://soundcloud.com/geroblacksmith" target="_blank" rel="noopener">listen on
+                    soundcloud</a><a class="btn" href="https://linktr.ee/geroblacksmith" target="_blank" rel="noopener"
+                    style="border-color:var(--cyan);color:var(--cyan)">all platforms</a></p>
+            <p class="note">Tip: replace this block with an embedded player or your latest release title.</p>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2>projects<i>05</i></h2>
+        <ul class="list">
+            <li><span>Dawless jams</span><em>studio sessions on video, YouTube</em></li>
+            <li><span>Mixes</span><em>long sets, SoundCloud</em></li>
+            <li><span>Original tracks</span><em>IDM, breakcore, dnb, ambient</em></li>
+            <li><span class="tick">Next project</span><em>name and date to be added</em></li>
+        </ul>
+    </section>
+
+    <section id="live">
+        <h2>live events<i>06</i></h2>
+        <ul class="list">
+            <li><span>No dates announced yet</span><em>check back soon</em></li>
+            <li><span class="note">Date / venue / city</span><em>add a show here</em></li>
+        </ul>
+        <div class="col" style="margin-top:28px">
+            <p>Interested in booking a live set or a dawless performance? <a href="#contact">Get in touch.</a></p>
+        </div>
+    </section>
+
+    <section id="socials">
+        <h2>socials<i>07</i></h2>
+        <ul class="list">
+            <li><a href="https://soundcloud.com/geroblacksmith" target="_blank" rel="noopener">SoundCloud</a><em>tracks
+                    and mixes</em></li>
+            <li><a href="https://www.facebook.com/GeroBlacksmith/" target="_blank"
+                    rel="noopener">Facebook</a><em>official page</em></li>
+            <li><a href="https://linktr.ee/geroblacksmith" target="_blank" rel="noopener">Linktree</a><em>every other
+                    platform</em></li>
+            <li><span>YouTube</span><em>jams and varied videos, add your channel link</em></li>
+        </ul>
+    </section>
+
+    <section id="contact">
+        <h2>contact<i>08</i></h2>
+        <div class="col">
+            <p>For bookings, collaborations, remixes or just to say hello, write through any social channel or the
+                Linktree.</p>
+            <p><a class="btn" href="https://linktr.ee/geroblacksmith" target="_blank" rel="noopener">open linktree</a><a
+                    class="btn" href="https://www.facebook.com/GeroBlacksmith/" target="_blank" rel="noopener"
+                    style="border-color:var(--cyan);color:var(--cyan)">message on facebook</a></p>
+            <p class="note">Add a direct email address here when you want one.</p>
+        </div>
+    </section>
+
+    <footer>&copy; <span id="y"></span> Gero Blacksmith</footer>
+
+    <script>
+        document.getElementById('y').textContent = new Date().getFullYear();
+        // scroll spy
+        var links = [].slice.call(document.querySelectorAll('nav a'));
+        var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')) });
+        function spy() {
+            var y = window.scrollY + window.innerHeight * .35, cur = 0;
+            secs.forEach(function (s, i) { if (s.offsetTop <= y) cur = i });
+            links.forEach(function (a, i) { a.classList.toggle('on', i === cur); if (i === cur && a.scrollIntoView) a.parentNode.scrollLeft = a.offsetLeft - 20 })
+        }
+        window.addEventListener('scroll', spy, { passive: true }); spy();
+        // oscilloscope
+        var c = document.getElementById('scope'), x = c.getContext('2d'), t = 0, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function size() { c.width = c.clientWidth; c.height = c.clientHeight }
+        size(); window.addEventListener('resize', size);
+        function draw() {
+            x.clearRect(0, 0, c.width, c.height);
+            var cols = ['#b6ff00', '#00e5ff', '#ff2a6d'];
+            for (var k = 0; k < 3; k++) {
+                x.beginPath(); x.strokeStyle = cols[k]; x.lineWidth = 1;
+                for (var i = 0; i <= c.width; i += 3) {
+                    var p = i / c.width;
+                    var y = c.height * (.5 + .12 * k - .12) + Math.sin(p * (9 + k * 7) + t * (1 + k * .6)) * c.height * .06 * Math.sin(p * 3 + t * .3)
+                        + (Math.random() - .5) * (k === 2 ? c.height * .04 : 2);
+                    i ? x.lineTo(i, y) : x.moveTo(i, y)
+                } x.stroke()
+            }
+            t += .03; if (!reduce) requestAnimationFrame(draw)
+        }
+        draw();
+    </script>
+</body>
+
+</html>
